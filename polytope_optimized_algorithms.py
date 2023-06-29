@@ -1,21 +1,45 @@
-import numpy as np
-def gustav_mult_opt(iter_space , data1 , data2, outshape):
+import time
+
+def csr_to_ij(csr_indptr, csr_indices):
+    n_rows = len(csr_indptr) - 1
+    ij_list = []
+    for i in range(n_rows):
+        start_idx = csr_indptr[i]
+        end_idx = csr_indptr[i+1]
+        for idx in range(start_idx, end_idx):
+            j = csr_indices[idx]
+            ij_list.append((i, j))
+    return ij_list
+
+def gustav_mult_opt(iter_space, data1, data2):
+    start_time = time.time()
+    max_i = max(iter_space, key=lambda t: t[0])[0]
+    max_k = max(iter_space, key=lambda t: t[2])[2]
+    outshape = (max_i + 1, max_k + 1)
+
     c = [[0 for _ in range(outshape[1])] for _ in range(outshape[0])]
-    curr_iter = 0
     ptr1 = 0
     ptr2 = 0
-    d1_unsorted = [(i, j,'A') for i, j, _ in iter_space]
-    d2_unsorted = [(j, k,'B') for _, j, k in iter_space]
+    d1_indptr = data1.indptr
+    d1_indices = data1.indices
+    d1_sorted = csr_to_ij(d1_indptr, d1_indices)
+    d1_dict = {coord: idx for idx, coord in enumerate(d1_sorted)}  # Convert to dictionary
 
-    d_sorted = sorted((d1_unsorted + d2_unsorted), key=lambda t: t[0] * outshape[0] + t[1])
+    d2_indptr = data2.indptr
+    d2_indices = data2.indices
+    d2_sorted = csr_to_ij(d2_indptr, d2_indices)
+    d2_dict = {coord: idx for idx, coord in enumerate(d2_sorted)}  # Convert to dictionary
 
-    for i,j,k in iter_space:
-        ptr1 = d_sorted.index((i, j, 'A')) - sum(t[2] == 'B' for t in d_sorted[:d_sorted.index((i, j, 'A'))])
-        ptr2 = d_sorted.index((j, k, 'B')) - sum(t[2] == 'A' for t in d_sorted[:d_sorted.index((j, k, 'B'))])
+    endtime = time.time()
+    print(f"Overhead completed. Time {endtime - start_time}")
+    start_time = time.time()
+    for i, j, k in iter_space:
+        # Access dictionary for faster index lookup
+        ptr1 = d1_dict[(i, j)]
+        ptr2 = d2_dict[(j, k)]
 
-        c[i][k] += data1[ptr1] * data2[ptr2]
-        curr_iter += 1
+        c[i][k] += data1.data[ptr1] * data2.data[ptr2]
 
-
+    endtime = time.time()
+    print(f"Total time of looping: {endtime-start_time}")
     return c
-

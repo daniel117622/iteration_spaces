@@ -65,8 +65,6 @@ def gustav_mult(matrix1, matrix2):
     q = len(matrix1[0])
     r = len(matrix2[0])
     
-    iter_space = []
-
     c = [[0] * r for _ in range(p)]
 
     for i in range(p):
@@ -75,7 +73,6 @@ def gustav_mult(matrix1, matrix2):
                 for k in range(r):
                     if matrix2[j][k] != 0:
                         c[i][k] += matrix1[i][j] * matrix2[j][k]
-                        iter_space.append([i,j,k])
 
 
-    return iter_space,c
+    return c
