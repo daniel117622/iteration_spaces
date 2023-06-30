@@ -1,4 +1,6 @@
 import time
+from line_profiler import LineProfiler
+import numpy as np
 
 def csr_to_ij(csr_indptr, csr_indices):
     n_rows = len(csr_indptr) - 1
@@ -11,13 +13,14 @@ def csr_to_ij(csr_indptr, csr_indices):
             ij_list.append((i, j))
     return ij_list
 
+
 def gustav_mult_opt(iter_space, data1, data2):
     start_time_init = time.time()
     max_i = max(iter_space, key=lambda t: t[0])[0]
     max_k = max(iter_space, key=lambda t: t[2])[2]
     outshape = (max_i + 1, max_k + 1)
 
-    c = [[0 for _ in range(outshape[1])] for _ in range(outshape[0])]
+    c = np.zeros((outshape[0], outshape[1]))
     ptr1 = 0
     ptr2 = 0
     d1_indptr = data1.indptr
