@@ -12,7 +12,7 @@ def csr_to_ij(csr_indptr, csr_indices):
     return ij_list
 
 def gustav_mult_opt(iter_space, data1, data2):
-    start_time = time.time()
+    start_time_init = time.time()
     max_i = max(iter_space, key=lambda t: t[0])[0]
     max_k = max(iter_space, key=lambda t: t[2])[2]
     outshape = (max_i + 1, max_k + 1)
@@ -31,7 +31,7 @@ def gustav_mult_opt(iter_space, data1, data2):
     d2_dict = {coord: idx for idx, coord in enumerate(d2_sorted)}  # Convert to dictionary
 
     endtime = time.time()
-    print(f"Overhead completed. Time {endtime - start_time}")
+    print(f"Overhead completed. Time {endtime - start_time_init}")
     start_time = time.time()
     for i, j, k in iter_space:
         # Access dictionary for faster index lookup
@@ -42,4 +42,5 @@ def gustav_mult_opt(iter_space, data1, data2):
 
     endtime = time.time()
     print(f"Total time of looping: {endtime-start_time}")
+    print(f"Total time: {endtime-start_time_init}")
     return c
