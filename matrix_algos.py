@@ -76,3 +76,14 @@ def gustav_mult(matrix1, matrix2):
 
 
     return c
+
+def iter_predic(tp1, tp2):
+    tp1 = np.array(tp1)
+    tp2 = np.array(tp2)
+
+    mask = np.equal.outer(tp1[:, 1], tp2[:, 0])
+    indices = np.nonzero(mask)
+    predict = np.column_stack((tp1[indices[0]], tp2[indices[1]][:, 1]))
+
+    return predict.tolist()
+    

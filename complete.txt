@@ -1,0 +1,28 @@
+Timer unit: 1e-06 s
+
+Total time: 0.0853573 s
+File: c:\Users\dan5j\Desktop\Python\investigaciones\polytopes\main.py
+Function: complete_test at line 8
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+     8                                           def complete_test():
+     9         1          0.6      0.6      0.0      DIMENSIONS = 1024
+    10                                           
+    11         1      21117.4  21117.4     24.7      A = create_sparse_matrix(DIMENSIONS,DIMENSIONS,DIMENSIONS,  seed = 42)
+    12         1      17486.9  17486.9     20.5      B = create_sparse_matrix(DIMENSIONS,DIMENSIONS,DIMENSIONS,  seed = 55)
+    13                                           
+    14         1      11679.2  11679.2     13.7      csrA = csr_matrix(A)
+    15         1       7317.0   7317.0      8.6      csrB = csr_matrix(B)
+    16                                           
+    17                                           
+    18         1        475.9    475.9      0.6      tp1 = np.column_stack((csrA.nonzero()[0], csrA.nonzero()[1])).tolist()
+    19         1        284.7    284.7      0.3      tp2 = np.column_stack((csrB.nonzero()[0], csrB.nonzero()[1])).tolist()
+    20         1       3619.7   3619.7      4.2      iter_space = iter_predic(tp1,tp2)
+    21                                           
+    22         1       8500.4   8500.4     10.0      gustav_mult_opt(iter_space, csrA, csrB)
+    23                                           
+    24         1      14872.2  14872.2     17.4      result = np.matmul(A, B)
+    25                                           
+    26         1          3.3      3.3      0.0      return csrA,csrB,iter_space
+

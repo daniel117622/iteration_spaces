@@ -34,7 +34,7 @@ def gustav_mult_opt(iter_space, data1, data2):
     d2_dict = {coord: idx for idx, coord in enumerate(d2_sorted)}  # Convert to dictionary
 
     endtime = time.time()
-    print(f"Overhead completed. Time {endtime - start_time_init}")
+    print(f"Overhead completed. Time {(endtime - start_time_init)*1000:.3f}ms")
     start_time = time.time()
     for i, j, k in iter_space:
         # Access dictionary for faster index lookup
@@ -44,6 +44,6 @@ def gustav_mult_opt(iter_space, data1, data2):
         c[i][k] += data1.data[ptr1] * data2.data[ptr2]
 
     endtime = time.time()
-    print(f"Total time of looping: {endtime-start_time}")
-    print(f"Total time: {endtime-start_time_init}")
+    print(f"Total time of looping: {(endtime-start_time)*1000:.3f}ms")
+    print(f"Total time: {(endtime-start_time_init)*1000:.3f}ms")
     return c
