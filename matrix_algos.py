@@ -160,16 +160,16 @@ def iterative_strassen_multiply(a, b):
     c_stack = [None] * stack_size
     i_stack = [None] * stack_size
     task_stack = [None] * stack_size
-
+    R = (7**depth-1)//6 + 1
     task_stack[0] = Task(a, b, 0)
-
-    iter_space = []
 
     for i in range(stack_size):
         task = task_stack[i]
-        iter_space.append([i,0])
-        # Base case, matrix is 1x1
-        if task.a.shape == (1, 1):
+        #if task.a.shape == (1, 1):
+        #    print(f"{i}")
+        #    c_stack[i] = task.a * task.b
+        #    continue
+        if i >= R-1: # equivalent to checking for shapes
             c_stack[i] = task.a * task.b
             continue
 
@@ -188,19 +188,22 @@ def iterative_strassen_multiply(a, b):
         task_stack[base_index + 6] = Task(a21 - a11, b11 + b12, base_index + 6)
         task_stack[base_index + 7] = Task(a12 - a22, b21 + b22, base_index + 7)
 
-        # Record the indices of the sub-results for this task
-        i_stack[i] = []
-        for j in range(1, 8):
-            i_stack[i].append(base_index + j)
-    # Combine results
-    for i in reversed(range(stack_size - (n-1)**3)): #Cut the meaningless c_stack values
-        # Fetch sub-results
-        p_values = []
-        for j in i_stack[i]:
-            p_values.append(c_stack[j])
-          
-        p1, p2, p3, p4, p5, p6, p7 = p_values
+   
+    # let R = (7**depth-1)//6 + 1
+    # let idx = i in reversed(R - 1)
+    # Indexes (j) come in the form (R - idx) * [stack_size - 1  , stack_size - 2 ... , stack_size - 7 ]
 
+    for i in reversed(range( (7**depth-1)//6 )):
+        temp = [None] * 7
+        temp[0] = c_stack[  7*i + 1 ]
+        temp[1] = c_stack[  7*i + 2 ]
+        temp[2] = c_stack[  7*i + 3 ]
+        temp[3] = c_stack[  7*i + 4 ]
+        temp[4] = c_stack[  7*i + 5 ]
+        temp[5] = c_stack[  7*i + 6 ]
+        temp[6] = c_stack[  7*i + 7 ]
+
+        p1, p2, p3, p4, p5, p6, p7 = temp
         # Compute the resulting quadrants
         c11 = p1 + p4 - p5 + p7
         c12 = p3 + p5
@@ -208,8 +211,13 @@ def iterative_strassen_multiply(a, b):
         c22 = p1 - p2 + p3 + p6
 
         # Combine quadrants into the resulting matrix
-        c_top = np.hstack((c11, c12))
-        c_bottom = np.hstack((c21, c22))
-        c_stack[i] = np.vstack((c_top, c_bottom))
+        # if 7*i + 1 <= i then the c11,c22, c21,c22 are scalars and hstack is inneficient.
+        if 7*i + 1 >= R-2:
+            c_stack[i] = np.array([[c11, c12], [c21, c22]])
+        else:
+            # If the c's are not scalars, use np.hstack and np.vstack as before
+            c_top = np.hstack((c11, c12))
+            c_bottom = np.hstack((c21, c22))
+            c_stack[i] = np.vstack((c_top, c_bottom))
 
-    return iter_space,c_stack[0]
+    return c_stack[0].reshape(n,n)

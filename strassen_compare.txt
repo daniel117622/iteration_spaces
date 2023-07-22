@@ -1,0 +1,13 @@
+Timer unit: 1e-06 s
+
+Total time: 4.85134 s
+File: c:\Users\dan5j\Desktop\Python\investigaciones\polytopes\strassen_profiling.py
+Function: test at line 7
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+     7                                           def test(A,B):
+     8         1    2775023.8 2775023.8     57.2      X1 = strassen_multiply(A,B)
+     9         1    2076309.8 2076309.8     42.8      X2 = iterative_strassen_multiply(A,B)
+    10         1          2.7      2.7      0.0      return X1, X2
+
