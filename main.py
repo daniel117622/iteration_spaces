@@ -17,11 +17,13 @@ def complete_test():
 
     tp1 = np.column_stack((csrA.nonzero()[0], csrA.nonzero()[1])).tolist()
     tp2 = np.column_stack((csrB.nonzero()[0], csrB.nonzero()[1])).tolist()
-    iter_space = iter_predic(tp1,tp2)
+    iter_space = iter_predic_opt(tp1,tp2)
 
     gustav_mult_opt(iter_space, csrA, csrB)
 
     result = np.matmul(A, B)
+
+    result2 = np.dot(csrA,csrB)
 
     return csrA,csrB,iter_space
 
@@ -38,7 +40,7 @@ if __name__ == "__main__":
     csrA,csrB,iter_space = complete_test()
 
     profiler.disable_by_count()
-    with open("complete.txt","w") as fd:
+    with open("complete_iter_opt.txt","w") as fd:
         profiler.print_stats(stream=fd, output_unit=1e-06)
     ################
     #SPECIFIC TESTS#
@@ -52,3 +54,4 @@ if __name__ == "__main__":
     profiler.disable_by_count()
     with open("gustav_mult.txt","w") as fd:
         profiler.print_stats(stream=fd, output_unit=1e-06)
+
