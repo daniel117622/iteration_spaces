@@ -1,5 +1,15 @@
 # Performance Analysis
+## Abstract
 
+In this study, two widely used algorithms for matrix multiplication are
+optimized using polyhedral compilation techniques. The results before and
+after optimization are meticulously documented and compared, identifying the
+domain in which each one offers optimal performance. Furthermore, it is
+revealed how these optimization techniques highlight sections of intrinsic
+parallelization that are not evident in the original algorithms.
+
+**Keywords:** Algorithms, matrix multiplication, strassen, paralelism,
+polyhedral model
 ---
 
 ## Results
